@@ -26,6 +26,24 @@ async function run() {
     const assignmentCollection = client
       .db("groupstudyDB")
       .collection("assignment");
+    const takenCollection = client.db("groupstudyDB").collection("taken");
+
+    //Taken related apis
+
+    //Read Taken
+    app.get("/taken", async (req, res) => {
+      const cursor = takenCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    //Add to taken
+    app.post("/taken", async (req, res) => {
+      const newTaken = req.body;
+      console.log(newTaken);
+      const result = await takenCollection.insertOne(newTaken);
+      res.send(result);
+    });
 
     //Assignment related apis
 
