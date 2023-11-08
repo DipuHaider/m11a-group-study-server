@@ -29,10 +29,18 @@ async function run() {
 
     //Assignment related apis
 
-    //Read All Assignment
+    //Read Assignment
     app.get("/assignment", async (req, res) => {
       const cursor = assignmentCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    //Read single Assignment
+    app.get("/assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await assignmentCollection.findOne(query);
       res.send(result);
     });
 
@@ -41,6 +49,40 @@ async function run() {
       const newAssignment = req.body;
       console.log(newAssignment);
       const result = await assignmentCollection.insertOne(newAssignment);
+      res.send(result);
+    });
+
+    //Update Assignment
+    app.put("/assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedAssignment = req.body;
+
+      const assignment = {
+        $set: {
+          title: updatedAssignment.title,
+          description: updatedAssignment.description,
+          marks: updatedAssignment.marks,
+          thumbnail: updatedAssignment.thumbnail,
+          level: updatedAssignment.level,
+          //   duedate: updatedAssignment.duedate,
+        },
+      };
+
+      const result = await assignmentCollection.updateOne(
+        filter,
+        assignment,
+        options
+      );
+      res.send(result);
+    });
+
+    //Delete Assignment
+    app.delete("/assignment/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await assignmentCollection.deleteOne(query);
       res.send(result);
     });
 
