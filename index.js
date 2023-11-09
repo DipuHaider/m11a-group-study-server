@@ -123,6 +123,16 @@ async function run() {
       res.send(result);
     });
 
+    //user related apis
+
+    //create user
+    app.post("/user", async (req, res) => {
+      const newUser = req.body;
+      console.log(newUser);
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
