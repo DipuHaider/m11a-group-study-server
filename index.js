@@ -45,6 +45,25 @@ async function run() {
       res.send(result);
     });
 
+    //Update taken
+    app.put("/taken/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedTaken = req.body;
+
+      const taken = {
+        $set: {
+          assignmentStatus: updatedTaken.assignmentStatus,
+          assignmentNote: updatedTaken.assignmentNote,
+          assignmentMarks: updatedTaken.assignmentMarks,
+        },
+      };
+
+      const result = await takenCollection.updateOne(filter, taken, options);
+      res.send(result);
+    });
+
     //Assignment related apis
 
     //Read Assignment
@@ -84,7 +103,7 @@ async function run() {
           marks: updatedAssignment.marks,
           thumbnail: updatedAssignment.thumbnail,
           level: updatedAssignment.level,
-          //   duedate: updatedAssignment.duedate,
+          duedate: updatedAssignment.duedate,
         },
       };
 
